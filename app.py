@@ -9,10 +9,11 @@ st.set_page_config(page_title="Analisis Sentimen Kebijakan TKA", layout="wide")
 # 2. Fungsi Cache Resource agar Model Tidak Dimuat Berulang Kali Setiap Klik
 @st.cache_resource
 def muat_seluruh_model():
-    svm = joblib.load('model/svm_model.pkl')
-    nb = joblib.load('model/nb_model.pkl')
-    tfidf = joblib.load('model/tfidf_vectorizer.pkl')
-    # Model IndoBERT diunduh otomatis ke environment cloud Streamlit (tidak perlu file pkl lokal)
+    # Hapus tulisan 'model/' di depannya
+    svm = joblib.load('svm_model.pkl')
+    nb = joblib.load('nb_model.pkl')
+    tfidf = joblib.load('tfidf_vectorizer.pkl')
+    
     indobert = pipeline("sentiment-analysis", model="indobenchmark/indobert-base-p2")
     return svm, nb, tfidf, indobert
 
@@ -65,7 +66,7 @@ with tab2:
     st.write("Berikut merupakan rangkuman nilai metrik evaluasi yang diperoleh dari proses komparasi data uji (Test Set):")
     
     try:
-        df_evaluasi_hasil = pd.read_csv("model/hasil_evaluasi.csv")
+        df_evaluasi_hasil = pd.read_csv("hasil_evaluasi.csv")
         st.dataframe(df_evaluasi_hasil, use_container_width=True)
         
         st.markdown("""
@@ -82,7 +83,7 @@ with tab3:
     st.write("Menampilkan daftar 10 data sampel dari pengujian kalimat yang salah diprediksi beserta poin jabaran analisis penyebab kesalahan:")
     
     try:
-        df_error_hasil = pd.read_csv("model/error_analysis.csv")
+        df_error_hasil = pd.read_csv("error_analysis.csv")
         st.table(df_error_hasil)
     except FileNotFoundError:
         st.warning("Berkas data 'error_analysis.csv' tidak dapat ditemukan di dalam direktori folder 'model/'.")
